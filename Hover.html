@@ -1,0 +1,73 @@
+<html> 
+ <head></head> 
+ <style>
+   *{
+  padding:0;
+  margin:0;
+  box-sizing: border-box;
+  font-family:sans-serif;
+  
+}
+body{
+  width:100%;
+  height:100vh;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  background-color:black;
+  
+}
+
+.cards{
+  background-color:black;
+  color:white;
+  height:250px;
+  width:220px;
+  display:flex;
+  
+  justify-content: center;
+  align-items:center;
+  gap:5px;
+  
+}
+
+.cards p{
+  cursor:pointer;
+  height:100%;
+  flex:1;
+  overflow:hidden;
+  border-radius:2px;
+  transition:all.5s;
+  background-color:#212121;
+  border:1px solid #5ac3ff;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  
+}
+
+.cards p span{
+  min-width:13em;
+  transform: rotate(90deg);
+  text-align:center;
+  transition:all.5s;
+  
+}
+
+.cards p:hover{
+  flex:4;
+  
+}
+.cards p:hover span{
+  transform: rotate(0deg);
+  }
+ </style>
+  <body>
+    <div class = "cards">
+      <p><span>Hover Me</span></p>
+      <p><span>Hover Me</span></p>
+      <p><span>Hover Me</span></p>
+    </div>
+  </body>
+ 
+</html>
