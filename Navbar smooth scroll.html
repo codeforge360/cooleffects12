@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <title>Navbar Smooth Scroll</title> 
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, sans-serif;
+    }
+    html{
+      scroll-behavior: smooth;
+    }
+
+    
+
+    body{
+      background:white;
+      color:black;
+      font-weight: bold;
+      
+    }
+
+    header{
+      position:fixed;
+      top:0;
+      width:100%;
+      background:#000;
+      padding:15px 0;
+      z-index:100;
+    }
+
+    nav{
+      display:flex;
+      justify-content:center;
+      gap:50px;
+      
+     
+    }
+
+    nav a{
+      color:white;
+      text-decoration:none;
+      font-size:18px;
+      height:3vh;
+    }
+
+    nav a:hover{
+      color:cyan;
+    }
+
+    section{
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:50px;
+      text-transform:uppercase;
+    }
+
+    
+  </style> 
+ </head> 
+ <body> 
+  <header> 
+   <nav> <a href="#home">Home</a> <a href="#about">About</a> <a href="#blog">Blog</a> <a href="#contact">Contact</a> 
+   </nav> 
+  </header> 
+  <section id="home">
+    Home 
+  </section> 
+  <section id="about">
+    About 
+  </section> 
+  <section id="blog">
+    Blog 
+  </section> 
+  <section id="contact">
+    Contact 
+  </section> 
+ </body>
+</html>
