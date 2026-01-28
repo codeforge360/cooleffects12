@@ -70,16 +70,13 @@ body{
 }
 
 @keyframes rotate{
-  0%{
-    transform:rotateX(-20deg) rotateY(0deg);
-  }
-  50%{
-    transform:rotateX(-20deg) rotateY(180deg);
-  }
-  100%{
-    transform:rotateX(-20deg) rotateY(360deg);
-  }
-     }
+      from{
+        transform: rotateX(0deg) rotateY(0deg);
+      }
+      to{
+        transform: rotateX(360deg) rotateY(360deg);
+      }
+}
    </style>
  </head> 
  <body> 
