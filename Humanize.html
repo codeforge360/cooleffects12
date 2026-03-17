@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Cleaner & Humanizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.3);
+        }
+
+        .chars-removed {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .chars-removed h4 {
+            color: #856404;
+            margin-bottom: 5px;
+        }
+
+        .output-group {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .output-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .output-text {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            min-height: 60px;
+            word-wrap: break-word;
+            border-left: 4px solid #667eea;
+            line-height: 1.6;
+        }
+
+        .output-text.humanized {
+            border-left-color: #28a745;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .copy-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .copy-btn {
+            flex: 1;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .copy-btn.copied {
+            background: #17a2b8;
+        }
+
+        .clear-btn {
+            background: #6c757d;
+        }
+
+        .clear-btn:hover {
+            background: #5a6268;
+        }
+
+        .success {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Text Cleaner & ✍️ Humanizer</h1>
+        
+        <div class="input-group">
+            <label for="inputText">Paste your text here:</label>
+            <textarea 
+                id="inputText" 
+                placeholder="Paste text with special characters like ', ., !, ?, @, #, $, etc..."
+            ></textarea>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn" onclick="cleanText()">
+                🧹 Clean All Special Characters
+            </button>
+            <button class="btn secondary" onclick="humanizeText()">
+                ✍️ Make Human-Like
+            </button>
+        </div>
+
+        <div class="chars-removed" id="charsRemoved" style="display: none;"></div>
+
+        <div class="output-group" id="outputGroup" style="display: none;">
+            <div class="output-label" id="outputLabel">Result:</div>
+            <div class="output-text" id="outputText"></div>
+            <div class="stats">
+                <span id="removedCount"></span>
+                <span id="charCount"></span>
+                <span id="modeInfo"></span>
+            </div>
+            <div class="copy-container">
+                <button class="copy-btn" onclick="copyText()">📋 Copy Result</button>
+                <button class="copy-btn clear-btn" onclick="clearAll()">🗑️ Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function cleanText() {
+            const inputText = document.getElementById('inputText').value;
+            processText(inputText, 'cleaned', '🧹 Cleaned Text');
+        }
+
+        function humanizeText() {
+            const inputText = document.getElementById('inputText').value;
+            if (!inputText.trim()) {
+                alert('Please paste some text first!');
+                return;
+            }
+            processText(inputText, 'humanized', '✍️ Humanized Text');
+        }
+
+        function processText(inputText, mode, labelText) {
+            const outputGroup = document.getElementById('outputGroup');
+            const outputText = document.getElementById('outputText');
+            const outputLabel = document.getElementById('outputLabel');
+            const removedCount = document.getElementById('removedCount');
+            const charCount = document.getElementById('charCount');
+            const modeInfo = document.getElementById('modeInfo');
+            const charsRemoved = document.getElementById('charsRemoved');
+
+            let resultText, removedCharsList = [];
+
+            if (mode === 'cleaned') {
+                // ✅ NOW REMOVES SINGLE QUOTES TOO! '
+                // Removes ALL these: ' " . , ! ? @ # $ % ^ & * ( ) [ ] { } | \ / ` ~ ; : - _
+                resultText = inputText.replace(/[^\w\s]/g, '');
+                
+                // Count specific characters removed for display
+                const charCounts = {
+                    "'": (inputText.match(/'/g) || []).length,
+                    '"': (inputText.match(/"/g) || []).length,
+                    '.': (inputText.match(/\./g) || []).length,
+                    ',': (inputText.match(/,/g) || []).length,
+                    '!': (inputText.match(/!/g) || []).length,
+                    '?': (inputText.match(/\?/g) || []).length
+                };
+                
+                removedCharsList = Object.entries(charCounts)
+                    .filter(([char, count]) => count > 0)
+                    .map(([char, count]) => `${count} ${char}`)
+                    .join(', ');
+            } else if (mode === 'humanized') {
+                resultText = rewriteHumanLike(inputText);
+            }
+
+            const originalLength = inputText.length;
+            const cleanedLength = resultText.length;
+            const totalRemoved = originalLength - cleanedLength;
+
+            // Show removed characters list
+            if (mode === 'cleaned' && removedCharsList) {
+                charsRemoved.innerHTML = `
+                    <h4>✅ Removed these characters:</h4>
+                    <div>${removedCharsList}</div>
+                `;
+                charsRemoved.style.display = 'block';
+            } else {
+                charsRemoved.style.display = 'none';
+            }
+
+            outputText.textContent = resultText;
+            outputLabel.textContent = labelText;
+            removedCount.textContent = `Removed ${totalRemoved} chars total`;
+            charCount.textContent = `${cleanedLength} characters`;
+            modeInfo.textContent = mode === 'cleaned' ? '(ALL special chars including quotes removed)' : '(Sounds more natural!)';
+            outputText.className = `output-text ${mode}`;
+
+            outputGroup.style.display = 'block';
+            outputGroup.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function rewriteHumanLike(text) {
+            // First clean single quotes and other special chars
+            let cleaned = text.replace(/[^\w\s]/g, '');
+            
+            // Humanize logic (same as before)
+            let sentences = cleaned.split(/\s*\n\s*/).filter(s => s.trim());
+            
+            let humanized = sentences.map(sentence => {
+                sentence = sentence
+                    .replace(/\bit is\b/gi, "it's")
+                    .replace(/\bdoes not\b/gi, "doesn't")
+                    .replace(/\bcan not\b/gi, "can't")
+                    .replace(/\bwill not\b/gi, "won't")
+                    .replace(/\bI am\b/gi, "I'm")
+                    .replace(/\bdo not\b/gi, "don't")
+                    .replace(/\bshould not\b/gi, "shouldn't")
+                    .replace(/\bwould not\b/gi, "wouldn't")
+                    .replace(/\bthere is\b/gi, "there's")
+                    .replace(/\bthere are\b/gi, "there're")
+                    .replace(/\bfor example\b/gi, "like")
+                    .replace(/\bin addition\b/gi, "also")
+                    .replace(/\bin conclusion\b/gi, "so")
+                    .replace(/\btherefore\b/gi, "so")
+                    .replace(/\bhowever\b/gi, "but")
+                    .replace(/\bfurthermore\b/gi, "plus")
+                    .replace(/\butilize\b/gi, "use")
+                    .replace(/\bcommence\b/gi, "start")
+                    .replace(/\bterminate\b/gi, "end")
+                    .replace(/\bendeavor\b/gi, "try")
+                    .replace(/\bnevertheless\b/gi, "still")
+                    .replace(/\bconsequently\b/gi, "so");
+
+                const casualPhrases = ['you know', 'kinda', 'pretty much', 'basically'];
+                if (Math.random() < 0.3 && sentence.length > 20) {
+                    const insertPos = Math.floor(sentence.length * 0.7);
+                    const phrase = casualPhrases[Math.floor(Math.random() * casualPhrases.length)];
+                    sentence = sentence.slice(0, insertPos) + ` ${phrase}, ` + sentence.slice(insertPos);
+                }
+
+                return sentence.trim();
+            }).join('\n\n');
+
+            return humanized;
+        }
+
+        function copyText() {
+            const outputText = document.getElementById('outputText').textContent;
+            const copyBtn = document.querySelector('.copy-btn:not(.clear-btn)');
+
+            if (!outputText) return;
+
+            navigator.clipboard.writeText(outputText).then(() => {
+                showCopyFeedback(copyBtn);
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = outputText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopyFeedback(copyBtn);
+            });
+        }
+
+        function showCopyFeedback(btn) {
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputGroup').style.display = 'none';
+            document.getElementById('charsRemoved').style.display = 'none';
+        }
+
+        // Keyboard shortcuts
+        document.getElementById('inputText').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.shiftKey) {
+                e.preventDefault();
+                cleanText();
+            } else if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                humanizeText();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('inputText').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    </script>
+</body>
+</html>
