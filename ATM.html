@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>ATM Simulator</title> 
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 300px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            width: 80%;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #message {
+            margin-top: 20px;
+            min-height: 50px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style> 
+ </head> 
+ <body> 
+  <div class="container"> 
+   <h1>ATM Simulator</h1> 
+   <div id="pin-section"> 
+    <p>Enter PIN:</p> 
+    <input type="password" id="pin-input" placeholder="Enter PIN"> <button id="enter-pin">Enter</button> 
+   </div> 
+   <div id="menu-section" class="hidden"> 
+    <p>Choose an option:</p> <button id="check-balance">1. Check Balance</button> <button id="deposit">2. Deposit Money</button> <button id="withdraw">3. Withdraw Money</button> <button id="change-pin">4. Change PIN</button> <button id="exit">5. Exit</button> 
+    <div id="amount-section" class="hidden"> 
+     <input type="number" id="amount-input" placeholder="Enter amount"> <button id="submit-amount">Submit</button> 
+    </div> 
+    <div id="pin-change-section" class="hidden"> 
+     <input type="password" id="old-pin-input" placeholder="Enter old PIN"> 
+     <input type="password" id="new-pin-input" placeholder="Enter new PIN"> <button id="submit-pin-change">Change PIN</button> 
+    </div> 
+   </div> 
+   <div id="message"></div> 
+  </div> 
+  <script>
+        let pin = 1385;
+        let balance = 1000;
+        let currentChoice = null;
+
+        const pinSection = document.getElementById('pin-section');
+        const menuSection = document.getElementById('menu-section');
+        const amountSection = document.getElementById('amount-section');
+        const pinChangeSection = document.getElementById('pin-change-section');
+        const message = document.getElementById('message');
+
+        // PIN Entry
+        document.getElementById('enter-pin').addEventListener('click', () => {
+            const enterPin = parseInt(document.getElementById('pin-input').value);
+            if (enterPin !== pin) {
+                message.textContent = "Incorrect PIN";
+                return;
+            }
+            pinSection.classList.add('hidden');
+            menuSection.classList.remove('hidden');
+            message.textContent = "";
+        });
+
+        // Menu Choices
+        document.getElementById('check-balance').addEventListener('click', () => {
+            message.textContent = `Your Balance = ${balance}`;
+        });
+
+        document.getElementById('deposit').addEventListener('click', () => {
+            currentChoice = 'deposit';
+            amountSection.classList.remove('hidden');
+            pinChangeSection.classList.add('hidden');
+            message.textContent = "";
+        });
+
+        document.getElementById('withdraw').addEventListener('click', () => {
+            currentChoice = 'withdraw';
+            amountSection.classList.remove('hidden');
+            pinChangeSection.classList.add('hidden');
+            message.textContent = "";
+        });
+
+        document.getElementById('change-pin').addEventListener('click', () => {
+            currentChoice = 'change-pin';
+            pinChangeSection.classList.remove('hidden');
+            amountSection.classList.add('hidden');
+            message.textContent = "";
+        });
+
+        document.getElementById('exit').addEventListener('click', () => {
+            message.textContent = "Thank you for using ATM";
+            setTimeout(() => location.reload(), 2000); // Reload to "exit"
+        });
+
+        // Amount Submission (Deposit/Withdraw)
+        document.getElementById('submit-amount').addEventListener('click', () => {
+            const amount = parseInt(document.getElementById('amount-input').value);
+            if (currentChoice === 'deposit') {
+                if (amount > 0) {
+                    balance += amount;
+                    message.textContent = `Updated Balance = ${balance}`;
+                } else {
+                    message.textContent = "Invalid amount";
+                }
+            } else if (currentChoice === 'withdraw') {
+                if (amount > balance) {
+                    message.textContent = "Insufficient balance";
+                } else if (amount > 0) {
+                    balance -= amount;
+                    message.textContent = `Remaining Balance = ${balance}`;
+                } else {
+                    message.textContent = "Invalid amount";
+                }
+            }
+            amountSection.classList.add('hidden');
+            document.getElementById('amount-input').value = "";
+        });
+
+        // PIN Change
+        document.getElementById('submit-pin-change').addEventListener('click', () => {
+            const oldPin = parseInt(document.getElementById('old-pin-input').value);
+            const newPin = parseInt(document.getElementById('new-pin-input').value);
+            if (oldPin === pin) {
+                pin = newPin;
+                message.textContent = "PIN changed successfully";
+            } else {
+                message.textContent = "Wrong old PIN";
+            }
+            pinChangeSection.classList.add('hidden');
+            document.getElementById('old-pin-input').value = "";
+            document.getElementById('new-pin-input').value = "";
+        });
+    </script> 
+ </body>
+</html>
